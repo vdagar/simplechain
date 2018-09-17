@@ -22,20 +22,34 @@ class Blockchain{
 		this.addBlock(new Block("First block in the chain - Genesis block"));
 	}
 
-	// Add new block
-	addBlock(newBlock){
+	/*
+	 * CRITERIA : addBlock(newBlock) function includes a method to store newBlock with LevelDB.
+	 */
+
+	async addBlock(newBlock) {
+		let res = '';
 		// Block height
-		newBlock.height = this.chain.length;
+		newBlock.height = this.blockHeight + 1;
+
 		// UTC timestamp
 		newBlock.time = new Date().getTime().toString().slice(0,-3);
+
 		// previous block hash
-		if(this.chain.length>0){
-			newBlock.previousBlockHash = this.chain[this.chain.length-1].hash;
+		if (newBlock.height > 0) {
+			const prevBlock = await this.getBlock(this.blockHeight);
+			newBlock.previousBlockHash = prevBlock.hash;
 		}
+
 		// Block hash with SHA256 using newBlock and converting to a string
 		newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
-		// Adding block object to chain
-		this.chain.push(newBlock);
+
+		this.blockHeight = newBlock.height;
+
+		// Adding block object to levelDB
+		await leveldb.addBlockToLevelDB(newBlock.height, JSON.stringify(newBlock)).then((result) => {
+			res = result ; }).catch(error => { res = error; });
+
+		return res;
 	}
 
 	/*
