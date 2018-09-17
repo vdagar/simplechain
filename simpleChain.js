@@ -6,17 +6,17 @@
 const leveldb	= require('./levelSandbox')
 const Block	= require('./block');
 
-/* ===== SHA256 with Crypto-js ===============================
+/* ================= SHA256 with Crypto-js ===================
 |  Learn more: Crypto-js: https://github.com/brix/crypto-js  |
 |  =========================================================*/
 
 const SHA256 = require('crypto-js/sha256');
 
-/* ===== Blockchain Class ==========================
-|  Class with a constructor for new blockchain 		|
+/* ================ Blockchain Class ===============
+|  Class with a constructor for new blockchain     |
 |  ================================================*/
 
-class Blockchain{
+class Blockchain {
 	constructor() {
 		/*
 		 * CRITERIA : Genesis block persist as the first block in the blockchain using LevelDB
@@ -113,35 +113,34 @@ class Blockchain{
 		let height = this.blockHeight;
 
 		for (var i = 0; i <= height; i++) {
-			try {throw i; }
-			catch(count) {
-				// validate block
-				this.getBlock(count).then((block) => {
+			// get block from levelDB
+			let block = await this.getBlock(i);
 
-					//console.log("Validating block : " + count);
+			// validate block
+			isValid = await this.validateBlock(block.height);
 
-					if (!this.validateBlock(block.height)) {
-						errorLog.push(block.height);
-					}
+			//console.log("Validating block : " + block.height);
 
-					// compare blocks hash link
-					if (block.previousBlockHash !== previousHash) {
-						errorLog.push(block.height);
-					}
+			if (!isValid) {
+				errorLog.push(block.height);
+			}
 
-					// save current block hash for comparision with next block's previous Hash
-					previousHash = block.hash
+			// compare blocks hash link
+			if (block.previousBlockHash !== previousHash) {
+				errorLog.push(block.height);
+			}
 
-					if (this.blockHeight === block.height) {
-						console.log("BlockChain Validation completed \n");
-						if (errorLog.length > 0) {
-							console.log('Block errors = ' + errorLog.length);
-							console.log('Blocks: ' + errorLog);
-						} else {
-							console.log('No errors detected\n\n');
-						}
-					}
-				});
+			// save current block hash for comparision with next block's previous Hash
+			previousHash = block.hash;
+
+			if (this.blockHeight === block.height) {
+				console.log("BlockChain Validation completed \n");
+				if (errorLog.length > 0) {
+					console.log('Block errors = ' + errorLog.length);
+					console.log('Blocks: ' + errorLog);
+				} else {
+					console.log('No errors detected\n\n');
+				}
 			}
 		}
 
