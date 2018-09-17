@@ -152,3 +152,30 @@ class Blockchain{
 		}).catch(error => { console.log(error) });*/
 	}
 }
+
+/* ================================= Testing ==================================|
+|  - Self-invoking function to add blocks to chain                             |
+|  - Learn more:                                                               |
+|   https://scottiestech.info/2014/07/01/javascript-fun-looping-with-a-delay/  |
+|                                                                              |
+|  * 100 Milliseconds loop = 36,000 blocks per hour                            |
+|     (13.89 hours for 500,000 blocks)                                         |
+|    Bitcoin blockchain adds 8640 blocks per day                               |
+|     ( new block every 10 minutes )                                           |
+|  ===========================================================================*/
+
+let blockchain = new Blockchain();
+
+(function theLoop (i) {
+	setTimeout(function () {
+		let blockTest = new Block("Test Block - " + (i + 1));
+		blockchain.addBlock(blockTest).then((result) => {
+			console.log(result);
+			i++;
+			if (i < 10) theLoop(i);
+		});
+	}, 1000);
+})(0);
+
+setTimeout(() => console.log("\n\nValidating BlockChain...\n"), 15000);
+setTimeout(() => blockchain.validateChain(), 20000);
