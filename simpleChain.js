@@ -103,24 +103,52 @@ class Blockchain{
 		}
 	}
 
-	// Validate blockchain
-	validateChain(){
+	/*
+	 * CRITERIA : Modify the validateChain() function to validate blockchain stored within levelDB
+	 */
+	async validateChain() {
+		let isValid = false;
 		let errorLog = [];
-		for (var i = 0; i < this.chain.length-1; i++) {
-			// validate block
-			if (!this.validateBlock(i))errorLog.push(i);
-			// compare blocks hash link
-			let blockHash = this.chain[i].hash;
-			let previousHash = this.chain[i+1].previousBlockHash;
-			if (blockHash!==previousHash) {
-				errorLog.push(i);
+		let previousHash = '';
+		let height = this.blockHeight;
+
+		for (var i = 0; i <= height; i++) {
+			try {throw i; }
+			catch(count) {
+				// validate block
+				this.getBlock(count).then((block) => {
+
+					//console.log("Validating block : " + count);
+
+					if (!this.validateBlock(block.height)) {
+						errorLog.push(block.height);
+					}
+
+					// compare blocks hash link
+					if (block.previousBlockHash !== previousHash) {
+						errorLog.push(block.height);
+					}
+
+					// save current block hash for comparision with next block's previous Hash
+					previousHash = block.hash
+
+					if (this.blockHeight === block.height) {
+						console.log("BlockChain Validation completed \n");
+						if (errorLog.length > 0) {
+							console.log('Block errors = ' + errorLog.length);
+							console.log('Blocks: ' + errorLog);
+						} else {
+							console.log('No errors detected\n\n');
+						}
+					}
+				});
 			}
 		}
-		if (errorLog.length>0) {
-			console.log('Block errors = ' + errorLog.length);
-			console.log('Blocks: '+errorLog);
-		} else {
-			console.log('No errors detected');
-		}
+
+
+		// uncomment these 3 lines to display chain after its validated
+		/*await leveldb.getChainFromLevelDB().then((blocks) => {
+			console.log(blocks);
+		}).catch(error => { console.log(error) });*/
 	}
 }
