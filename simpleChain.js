@@ -38,15 +38,19 @@ class Blockchain{
 		this.chain.push(newBlock);
 	}
 
-	// Get block height
-	getBlockHeight(){
-		return this.chain.length-1;
+	/*
+	 * CRITERIA : Modify getBlockHeight() function to retrieve current block height within the LevelDB chain.
+	 */
+	async getBlockHeight() {
+		return await leveldb.getBlockHeightFromLevelDB().then((height) => { return height; }).catch(error => { console.log(error); });
 	}
 
-	// get block
-	getBlock(blockHeight){
+	/*
+	 * CRITERIA : Modify getBlock() function to retrieve a block by it's block heigh within the LevelDB chain.
+	 */
+	async getBlock(blockHeight) {
 		// return object as a single string
-		return JSON.parse(JSON.stringify(this.chain[blockHeight]));
+		return JSON.parse(await leveldb.getBlockFromLevelDB(blockHeight).then((block) => {return block }).catch(error => { console.log(error); }));
 	}
 
 	// validate block
