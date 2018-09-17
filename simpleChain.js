@@ -1,3 +1,11 @@
+
+/**
+ * CRITERIA: Configure simpleChain.js with levelDB to persist blockchain dataset using the level Node.js library.
+ */
+
+const leveldb	= require('./levelSandbox')
+const Block	= require('./block');
+
 /* ===== SHA256 with Crypto-js ===============================
 |  Learn more: Crypto-js: https://github.com/brix/crypto-js  |
 |  =========================================================*/
