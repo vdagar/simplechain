@@ -17,9 +17,19 @@ const SHA256 = require('crypto-js/sha256');
 |  ================================================*/
 
 class Blockchain{
-	constructor(){
-		this.chain = [];
-		this.addBlock(new Block("First block in the chain - Genesis block"));
+	constructor() {
+		/*
+		 * CRITERIA : Genesis block persist as the first block in the blockchain using LevelDB
+		 */
+
+		this.blockHeight;
+		this.getBlockHeight().then((height) => {
+			this.blockHeight = height;
+			if (height === -1) {
+				this.addBlock(new Block("First block in the chain - Genesis block"));
+			}
+
+		}).catch(error => { console.log(error) });
 	}
 
 	/*
