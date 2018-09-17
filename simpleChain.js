@@ -77,18 +77,25 @@ class Blockchain{
 		return JSON.parse(await leveldb.getBlockFromLevelDB(blockHeight).then((block) => {return block }).catch(error => { console.log(error); }));
 	}
 
-	// validate block
-	validateBlock(blockHeight){
-		// get block object
-		let block = this.getBlock(blockHeight);
-		// get block hash
+	/*
+	 * CRITERIA : Modify the validateBlock() function to validate a block stored within levelDB
+	 */
+	async validateBlock(blockHeight) {
+		// get block from level db
+		let block = await this.getBlock(blockHeight);
+
+		// save block hash
 		let blockHash = block.hash;
+
 		// remove block hash to test block integrity
 		block.hash = '';
+
 		// generate block hash
 		let validBlockHash = SHA256(JSON.stringify(block)).toString();
+
 		// Compare
-		if (blockHash===validBlockHash) {
+		if (blockHash === validBlockHash) {
+			//console.log(blockHash  + " === " + validBlockHash);
 			return true;
 		} else {
 			console.log('Block #'+blockHeight+' invalid hash:\n'+blockHash+'<>'+validBlockHash);
