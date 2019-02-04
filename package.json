@@ -1,0 +1,31 @@
+{
+  "name": "simplechain",
+  "version": "1.0.0",
+  "description": "Private Blockchain Project for Udacity Nanodegree Program",
+  "main": "simpleChain.js",
+  "scripts": {
+    "test": "node simpleChain.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vdagar/simplechain.git"
+  },
+  "keywords": [
+    "Private",
+    "Blockchain",
+    "Project",
+    "Udacity",
+    "Nanodegree",
+    "Program"
+  ],
+  "author": "Virender Dagar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vdagar/simplechain/issues"
+  },
+  "homepage": "https://github.com/vdagar/simplechain#readme",
+  "dependencies": {
+    "crypto-js": "^3.1.9-1",
+    "level": "^4.0.0"
+  }
+}
